@@ -1,15 +1,13 @@
 package com.examly.springapp.model;
 
+import javax.persistence.*;
 import java.util.List;
-import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String email;
     private String password;
@@ -23,15 +21,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
-    private List<Follower> following;
-
-    // Constructors
+    // Constructors, Getters, and Setters
     public User() {
     }
 
-    public User(Long id, String name, String email, String password, List<Post> posts,
-            List<Comment> comments, List<Like> likes, List<Follower> following) {
+    public User(Long id, String name, String email, String password, List<Post> posts, List<Comment> comments,
+            List<Like> likes) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -39,7 +34,6 @@ public class User {
         this.posts = posts;
         this.comments = comments;
         this.likes = likes;
-        this.following = following;
     }
 
     // Getters and Setters
@@ -97,13 +91,5 @@ public class User {
 
     public void setLikes(List<Like> likes) {
         this.likes = likes;
-    }
-
-    public List<Follower> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(List<Follower> following) {
-        this.following = following;
     }
 }

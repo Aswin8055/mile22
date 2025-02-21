@@ -3,54 +3,43 @@ package com.examly.springapp.controller;
 import com.examly.springapp.model.Like;
 import com.examly.springapp.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/likes")
 public class LikeController {
 
-    private final LikeService likeService;
-
     @Autowired
-    public LikeController(LikeService likeService) {
-        this.likeService = likeService;
-    }
+    private LikeService likeService;
 
     @GetMapping
-    public ResponseEntity<List<Like>> getAllLikes() {
-        return ResponseEntity.ok(likeService.getAllLikes());
+    public List<Like> getAllLikes() {
+        return likeService.getAllLikes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Like> getLikeById(@PathVariable Long id) {
-        Like like = likeService.getLikeById(id);
-        if (like == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(like);
+    public Like getLikeById(@PathVariable Long id) {
+        return likeService.getLikeById(id);
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<List<Like>> getLikesByPostId(@PathVariable Long postId) {
-        return ResponseEntity.ok(likeService.getLikesByPostId(postId));
+    public List<Like> getLikesByPostId(@PathVariable Long postId) {
+        return likeService.getLikesByPostId(postId);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Like>> getLikesByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(likeService.getLikesByUserId(userId));
+    public List<Like> getLikesByUserId(@PathVariable Long userId) {
+        return likeService.getLikesByUserId(userId);
     }
 
     @PostMapping
-    public ResponseEntity<Like> createLike(@RequestBody Like like) {
-        return ResponseEntity.ok(likeService.createLike(like));
+    public Like createLike(@RequestBody Like like) {
+        return likeService.createLike(like);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLike(@PathVariable Long id) {
+    public void deleteLike(@PathVariable Long id) {
         likeService.deleteLike(id);
-        return ResponseEntity.ok().build();
     }
 }
