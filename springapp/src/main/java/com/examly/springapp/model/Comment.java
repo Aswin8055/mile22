@@ -1,17 +1,35 @@
 package com.examly.springapp.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String content;
     private String createdDate;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @Column(name = "post_id", insertable = false, updatable = false)
     private Long postId;
 
-    // Default constructor
+    // Constructors
     public Comment() {
     }
 
-    // Parameterized constructor
     public Comment(Long id, String content, String createdDate, Long userId, Long postId) {
         this.id = id;
         this.content = content;
@@ -45,12 +63,28 @@ public class Comment {
         this.createdDate = createdDate;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public Long getPostId() {

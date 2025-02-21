@@ -1,39 +1,42 @@
 package com.examly.springapp.model;
 
 import java.util.List;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "posts")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String content;
     private String imageUrl;
     private String createdDate;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes;
 
-    // Default constructor
+    // Constructors
     public Post() {
     }
 
-    // Constructor with basic fields
     public Post(Long id, String content, String imageUrl, String createdDate, Long userId) {
         this.id = id;
         this.content = content;
         this.imageUrl = imageUrl;
         this.createdDate = createdDate;
         this.userId = userId;
-    }
-
-    // Full constructor
-    public Post(Long id, String content, String imageUrl, String createdDate, Long userId, List<Comment> comments,
-            List<Like> likes) {
-        this.id = id;
-        this.content = content;
-        this.imageUrl = imageUrl;
-        this.createdDate = createdDate;
-        this.userId = userId;
-        this.comments = comments;
-        this.likes = likes;
     }
 
     // Getters and Setters
@@ -67,6 +70,14 @@ public class Post {
 
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getUserId() {

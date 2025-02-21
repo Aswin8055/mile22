@@ -1,24 +1,37 @@
 package com.examly.springapp.model;
 
 import java.util.List;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String email;
     private String password;
-    private List<Post> posts;
-    private List<Comment> comments;
-    private List<Like> likes;
-    private String profilePicture;
 
-    // Default constructor
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Like> likes;
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private List<Follower> following;
+
+    // Constructors
     public User() {
     }
 
-    // Parameterized constructor
-    public User(Long id, String name, String email, String password, List<Post> posts, List<Comment> comments,
-            List<Like> likes, String profilePicture) {
+    public User(Long id, String name, String email, String password, List<Post> posts,
+            List<Comment> comments, List<Like> likes, List<Follower> following) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -26,7 +39,7 @@ public class User {
         this.posts = posts;
         this.comments = comments;
         this.likes = likes;
-        this.profilePicture = profilePicture;
+        this.following = following;
     }
 
     // Getters and Setters
@@ -86,11 +99,11 @@ public class User {
         this.likes = likes;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public List<Follower> getFollowing() {
+        return following;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setFollowing(List<Follower> following) {
+        this.following = following;
     }
 }

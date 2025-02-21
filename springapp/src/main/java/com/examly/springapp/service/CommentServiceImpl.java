@@ -1,4 +1,4 @@
-package com.examly.springapp.service.impl;
+package com.examly.springapp.service;
 
 import com.examly.springapp.model.Comment;
 import com.examly.springapp.service.CommentService;
@@ -21,60 +21,60 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<Comment> getAllComments() {
         return new ArrayList<>(comments.values());
-        }
+    }
 
-        @Override
-        public Comment getCommentById(Long id) {
-            return comments.get(id);
-        }
+    @Override
+    public Comment getCommentById(Long id) {
+        return comments.get(id);
+    }
 
-        @Override
-        public List<Comment> getCommentsByPostId(Long postId) {
-            return comments.values().stream()
-            .filter(comment -> comment.getPostId().equals(postId))
-            .collect(Collectors.toList());
-            }
+    @Override
+    public List<Comment> getCommentsByPostId(Long postId) {
+        return comments.values().stream()
+                .filter(comment -> comment.getPostId().equals(postId))
+                .collect(Collectors.toList());
+    }
 
-            @Override
-            public List<Comment> getCommentsByUserId(Long userId) {
-                return comments.values().stream()
+    @Override
+    public List<Comment> getCommentsByUserId(Long userId) {
+        return comments.values().stream()
                 .filter(comment -> comment.getUserId().equals(userId))
                 .collect(Collectors.toList());
-            }
+    }
 
-            @Override
-            public Comment createComment(Comment comment) {
-                // Generate new ID if not provided
-                if (comment.getId() == null) {
-                    comment.setId(nextId++);
-                    }
+    @Override
+    public Comment createComment(Comment comment) {
+        // Generate new ID if not provided
+        if (comment.getId() == null) {
+            comment.setId(nextId++);
+        }
 
-                    // Set creation date if not provided
-                    if (comment.getCreatedDate() == null) {
-                        comment.setCreatedDate(LocalDate.now().toString());
-                        }
+        // Set creation date if not provided
+        if (comment.getCreatedDate() == null) {
+            comment.setCreatedDate(LocalDate.now().toString());
+        }
 
-                        comments.put(comment.getId(), comment);
-                        return comment;
-                    }
+        comments.put(comment.getId(), comment);
+        return comment;
+    }
 
-                    @Override
-                    public Comment updateComment(Long id, Comment comment) {
-                        if (!comments.containsKey(id)) {
-                            return null;
-                            }
+    @Override
+    public Comment updateComment(Long id, Comment comment) {
+        if (!comments.containsKey(id)) {
+            return null;
+        }
 
-                            Comment existingComment = comments.get(id);
+        Comment existingComment = comments.get(id);
 
-                            if (comment.getContent() != null) {
-                                existingComment.setContent(comment.getContent());
-                                }
+        if (comment.getContent() != null) {
+            existingComment.setContent(comment.getContent());
+        }
 
-                                return existingComment;
-                            }
+        return existingComment;
+    }
 
-                            @Override
-                            public void deleteComment(Long id) {
-                                comments.remove(id);
-                            }
-                            }
+    @Override
+    public void deleteComment(Long id) {
+        comments.remove(id);
+    }
+}
