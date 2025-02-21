@@ -1,76 +1,65 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.Post;
+import com.examly.springapp.repository.PostRepository;
 import com.examly.springapp.service.PostService;
+import com.examly.springapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 @Service
 public class PostServiceImpl implements PostService {
 
-    // In-memory storage for posts
-    private final Map<Long, Post> posts = new HashMap<>();
-    private Long nextId = 1L;
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<Post> getAllPosts() {
-        return new ArrayList<>(posts.values());
+        return postRepository.findAll();
     }
 
     @Override
     public Post getPostById(Long id) {
-        return posts.get(id);
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
     }
 
     @Override
     public List<Post> getPostsByUserId(Long userId) {
-        return posts.values().stream()
-                .filter(post -> post.getUserId().equals(userId))
-                .collect(Collectors.toList());
+        return postRepository.findByUserId(userId);
     }
 
     @Override
     public Post createPost(Post post) {
-        // Generate new ID if not provided
-        if (post.getId() == null) {
-            post.setId(nextId++);
-        }
-
-        // Set creation date if not provided
         if (post.getCreatedDate() == null) {
             post.setCreatedDate(LocalDate.now().toString());
         }
-
-        posts.put(post.getId(), post);
-        return post;
+        post.setUser(userService.getUserById(post.getUserId()));
+        return postRepository.save(post);
     }
 
     @Override
-    public Post updatePost(Long id, Post post) {
-        if (!posts.containsKey(id)) {
-            return null;
+    public Post updatePost(Long id, Post postDetails) {
+        Post post = getPostById(id);
+
+        if (postDetails.getContent() != null) {
+            post.setContent(postDetails.getContent());
+        }
+        if (postDetails.getImageUrl() != null) {
+            post.setImageUrl(postDetails.getImageUrl());
         }
 
-        Post existingPost = posts.get(id);
-
-        if (post.getContent() != null) {
-            existingPost.setContent(post.getContent());
-        }
-        if (post.getImageUrl() != null) {
-            existingPost.setImageUrl(post.getImageUrl());
-        }
-
-        return existingPost;
+        return postRepository.save(post);
     }
 
     @Override
     public void deletePost(Long id) {
-        posts.remove(id);
+        Post post = getPostById(id);
+        postRepository.delete(post);
     }
 }

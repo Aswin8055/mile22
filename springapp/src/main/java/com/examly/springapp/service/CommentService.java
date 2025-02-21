@@ -11,4 +11,4 @@ public interface CommentService {
     Comment createComment(Comment comment);
     Comment updateComment(Long id, Comment comment);
     void deleteComment(Long id);
-    }
+}

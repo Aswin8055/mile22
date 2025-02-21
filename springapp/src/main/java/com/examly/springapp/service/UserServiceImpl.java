@@ -1,67 +1,54 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.User;
+import com.examly.springapp.repository.UserRepository;
 import com.examly.springapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    // In-memory storage for users
-    private final Map<Long, User> users = new HashMap<>();
-    private Long nextId = 1L;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<User> getAllUsers() {
-        return new ArrayList<>(users.values());
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserById(Long id) {
-        return users.get(id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
     @Override
     public User createUser(User user) {
-        // Generate new ID if not provided
-        if (user.getId() == null) {
-            user.setId(nextId++);
-        }
-        users.put(user.getId(), user);
-        return user;
+        return userRepository.save(user);
     }
 
     @Override
-    public User updateUser(Long id, User user) {
-        if (!users.containsKey(id)) {
-            return null;
+    public User updateUser(Long id, User userDetails) {
+        User user = getUserById(id);
+
+        if (userDetails.getName() != null) {
+            user.setName(userDetails.getName());
+        }
+        if (userDetails.getEmail() != null) {
+            user.setEmail(userDetails.getEmail());
+        }
+        if (userDetails.getPassword() != null) {
+            user.setPassword(userDetails.getPassword());
         }
 
-        User existingUser = users.get(id);
-
-        if (user.getName() != null) {
-            existingUser.setName(user.getName());
-        }
-        if (user.getEmail() != null) {
-            existingUser.setEmail(user.getEmail());
-        }
-        if (user.getPassword() != null) {
-            existingUser.setPassword(user.getPassword());
-        }
-        if (user.getProfilePicture() != null) {
-            existingUser.setProfilePicture(user.getProfilePicture());
-        }
-
-        return existingUser;
+        return userRepository.save(user);
     }
 
     @Override
     public void deleteUser(Long id) {
-        users.remove(id);
+        User user = getUserById(id);
+        userRepository.delete(user);
     }
 }
