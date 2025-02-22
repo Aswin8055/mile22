@@ -1,9 +1,11 @@
+// PostController.java
 package com.examly.springapp.controller;
 
 import com.examly.springapp.model.Post;
 import com.examly.springapp.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -16,16 +18,6 @@ public class PostController {
     @GetMapping
     public List<Post> getAllPosts() {
         return postService.getAllPosts();
-    }
-
-    @GetMapping("/{id}")
-    public Post getPostById(@PathVariable Long id) {
-        return postService.getPostById(id);
-    }
-
-    @GetMapping("/user/{userId}")
-    public List<Post> getPostsByUserId(@PathVariable Long userId) {
-        return postService.getPostsByUserId(userId);
     }
 
     @PostMapping
