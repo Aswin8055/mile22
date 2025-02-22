@@ -1,54 +1,48 @@
+// UserServiceImpl.java
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.User;
-import com.examly.springapp.repository.UserRepository;
 import com.examly.springapp.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    @Autowired
-    private UserRepository userRepository;
+    private List<User> users = new ArrayList<>();
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return users;
     }
 
     @Override
     public User createUser(User user) {
-        return userRepository.save(user);
+        users.add(user);
+        return user;
     }
 
     @Override
-    public User updateUser(Long id, User userDetails) {
-        User user = getUserById(id);
-
-        if (userDetails.getName() != null) {
-            user.setName(userDetails.getName());
+    public User updateUser(Long id, User user) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getId().equals(id)) {
+                users.set(i, user);
+                return user;
+            }
         }
-        if (userDetails.getEmail() != null) {
-            user.setEmail(userDetails.getEmail());
-        }
-        if (userDetails.getPassword() != null) {
-            user.setPassword(userDetails.getPassword());
-        }
-
-        return userRepository.save(user);
+        return null;
     }
 
     @Override
     public void deleteUser(Long id) {
-        User user = getUserById(id);
-        userRepository.delete(user);
+        users.removeIf(user -> user.getId().equals(id));
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return users.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 }
