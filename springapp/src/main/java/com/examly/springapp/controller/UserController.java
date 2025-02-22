@@ -3,6 +3,7 @@ package com.examly.springapp.controller;
 import com.examly.springapp.model.User;
 import com.examly.springapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 }
