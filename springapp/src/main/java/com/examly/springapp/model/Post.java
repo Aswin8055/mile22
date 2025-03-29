@@ -1,10 +1,29 @@
 package com.examly.springapp.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "posts")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String content;
+
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "created_date")
     private String createdDate;
+
+    @Column(name = "user_id")
     private Long userId;
 
     // Default constructor

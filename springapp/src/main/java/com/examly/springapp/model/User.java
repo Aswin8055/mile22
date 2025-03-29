@@ -3,9 +3,18 @@ package com.examly.springapp.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -31,7 +40,7 @@ public class User {
     private List<Like> likes = new ArrayList<>();
 
     // Default Constructor
-    public User(long l, String string, String string2, String string3, Object object, Object object2, Object object3, Object object4) {
+    public User() {
     }
 
     // Simplified Constructor (used in test)

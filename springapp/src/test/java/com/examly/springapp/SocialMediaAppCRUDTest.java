@@ -1,9 +1,12 @@
 package com.examly.springapp;
 
-import com.examly.springapp.model.*;
-import com.examly.springapp.service.*;
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,14 +14,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.examly.springapp.model.Post;
+import com.examly.springapp.model.User;
+import com.examly.springapp.service.CommentService;
+import com.examly.springapp.service.LikeService;
+import com.examly.springapp.service.PostService;
+import com.examly.springapp.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,8 +52,8 @@ public class SocialMediaAppCRUDTest {
 
     @Test
     public void CRUD_test_Get_All_Users() throws Exception {
-        User user1 = new User(1L, "John Doe", "john@example.com", "password123", null, null, null, null);
-        User user2 = new User(2L, "Jane Smith", "jane@example.com", "password456", null, null, null, null);
+        User user1 = new User(1L, "John Doe", "john@example.com", "password123");
+        User user2 = new User(2L, "Jane Smith", "jane@example.com", "password456");
         when(userService.getAllUsers()).thenReturn(Arrays.asList(user1, user2));
 
         mockMvc.perform(get("/api/users"))
